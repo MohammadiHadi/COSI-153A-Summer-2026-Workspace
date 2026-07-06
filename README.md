@@ -1,3 +1,2 @@
-# My first repo
-## I am adding a new line
-## This is a new update
+# COSI 153A: Mobile and Web Dev
+## Summer 2026 Workspace
