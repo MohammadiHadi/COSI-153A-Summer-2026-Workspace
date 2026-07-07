@@ -4,10 +4,6 @@ body {
   padding: 0;
 }
 
-p {
-  color: blue;
-}
-
 /* Class selector */
 .note-body {
   margin: 0 0 12px;
