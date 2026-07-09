@@ -1,16 +1,6 @@
 import { useState } from "react";
+import NoteCard from "./components/NoteCard";
 import "./App.css";
-
-function NoteCard({ note }) {
-  return (
-    <article className="note-card">
-      <h3>{note.title}</h3>
-      <p>{note.body}</p>
-      <small>{note.date}</small>
-    </article>
-  );
-}
-
 
 function App() {
   const [notes, setNotes] = useState([
@@ -33,7 +23,10 @@ function App() {
       </header>
       <h2>Notes ({notes.length})</h2>
       {notes.map((note) => (
-        <NoteCard key={note.id} note={note} />
+        <NoteCard key={note.id} title={note.title} body={note.body} date={note.date}/>
+        // props = { key: note.id, note:note}
+        // props = { key: note.id, title: note.title ...}
+
       ))}
     </div>
   );
