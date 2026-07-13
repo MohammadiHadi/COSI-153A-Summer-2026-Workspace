@@ -8,15 +8,21 @@ import {
   Image,
   TextInput,
   Button,
+  Platform,
+  KeyboardAvoidingView,
+  Keyboard,
 } from "react-native";
 import { useState } from "react";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
-export default function App() {
-  const [saving, setSaving] = useState(false);
-  const [title, setTitle] = useState("");
-  const [body, setBody] = useState("");
+type Note={
+  id: string,
+  title: string,
+  body: string,
+}
 
-  const notes = [
+
+const initialNotes: Note[] = [
     {
       id: "1",
       title: "Trailhead observation",
@@ -25,6 +31,14 @@ export default function App() {
     { id: "2", title: "Wildlife", body: "Saw a red fox near the meadow." },
     { id: "3", title: "Weather", body: "Sunny with scattered clouds." },
   ];
+
+export default function App() {
+  const [saving, setSaving] = useState(false);
+  const [title, setTitle] = useState<string>("");
+  const [body, setBody] = useState<string>("");
+  const [active, setActive] = useState(false);
+  const [error, setError] = useState("");
+  const [notes, setNotes] = useState<Note[]>(initialNotes)
 
   const renderItem = ({ item }) => (
     <View style={styles.card}>
@@ -50,10 +64,26 @@ export default function App() {
   );
 
   const saveNote = () => {
+    Keyboard.dismiss();
+    if (!title.trim()) {
+      setError("Title is required!");
+      return;
+    }
+
+    if (!body.trim()) {
+      setError("Body is required!");
+      return;
+    }
     setSaving(true);
-    console.log("Title:", title);
-    console.log("Body:", body);
-    console.log("Note saved!");
+    // console.log("Title:", title);
+    // console.log("Body:", body);
+    // console.log("Note saved!");
+
+    const newNote:Note = { id: Date.now().toString(), title: title, body: body}
+    setNotes((currentNotes) =>
+      [...currentNotes, newNote]
+    )
+    setError("");
 
     setTimeout(() => {
       setSaving(false);
@@ -67,55 +97,85 @@ export default function App() {
   };
 
   return (
-    <View style={styles.container}>
-      <FlatList
-        data={notes}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-        contentContainerStyle={{ padding: 16 }}
-      />
-      <View style={styles.form}>
-        <Text style={styles.formTitle}>Add a Note</Text>
-        <TextInput
-          style={styles.input}
-          value={title}
-          onChangeText={setTitle}
-          placeholder="Type a title"
-        ></TextInput>
-        <TextInput
-          style={[styles.input, styles.multiline]}
-          value={body}
-          onChangeText={setBody}
-          placeholder="Type a body"
-          multiline
-          textAlignVertical="top"
-        ></TextInput>
-        <Pressable
-          onPress={saveNote}
-          onLongPress={showOptions}
-          delayLongPress={800}
-          hitSlop={10}
-          disabled={saving}
-          style={({pressed})=>[styles.saveButton, pressed && styles.saveButtonPressed, saving && styles.saveButtonDisabled]}
+    <SafeAreaProvider>
+      <SafeAreaView style={styles.container} edges={["top","bottom", "right", "left"]}>
+        <KeyboardAvoidingView
+          style={{ flex: 1 }}
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
         >
-          <Text style={styles.saveButtonText}>{saving ? "Saving..." : "Save"}</Text>
-        </Pressable>
-         {/* <Button
+          <View style={styles.container}>
+            <FlatList
+              data={notes}
+              renderItem={renderItem}
+              keyExtractor={(item) => item.id}
+              contentContainerStyle={{ padding: 16 }}
+            />
+            <View style={styles.form}>
+              <Text style={styles.formTitle}>Add a Note</Text>
+              {error !== "" && <Text style={styles.error}>{error}</Text>}
+              <TextInput
+                style={[styles.input, active && styles.inputFocused]}
+                value={title}
+                onChangeText={setTitle}
+                placeholder="Type a title"
+                returnKeyType="default"
+                onFocus={() => {
+                  setActive(true);
+                }}
+                onBlur={() => {
+                  setActive(false);
+                }}
+                // onSubmitEditing={saveNote}
+                // secureTextEntry={true}
+                // maxLength={10}
+                submitBehavior="blurAndSubmit"
+              ></TextInput>
+              <TextInput
+                style={[styles.input, styles.multiline]}
+                value={body}
+                onChangeText={setBody}
+                placeholder="Type a body"
+                multiline
+                textAlignVertical="top"
+                keyboardType="default"
+                autoCapitalize="sentences"
+                autoCorrect={true}
+                // submitBehavior="blurAndSubmit"
+              ></TextInput>
+              <Pressable
+                onPress={saveNote}
+                onLongPress={showOptions}
+                delayLongPress={800}
+                hitSlop={10}
+                disabled={saving}
+                style={({ pressed }) => [
+                  styles.saveButton,
+                  pressed && styles.saveButtonPressed,
+                  saving && styles.saveButtonDisabled,
+                ]}
+              >
+                <Text style={styles.saveButtonText}>
+                  {saving ? "Saving..." : "Save"}
+                </Text>
+              </Pressable>
+              {/* <Button
     title={saving ? 'Saving…' : 'Add note'}
     onPress={saveNote}
     disabled={saving}
   /> */}
-
-      </View>
-    </View>
+            </View>
+          </View>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    // alignItems: "center",
+    // justifyContent: "center",
   },
 
   title: {
@@ -206,10 +266,19 @@ const styles = StyleSheet.create({
   saveButtonDisabled: {
     backgroundColor: "#999999",
   },
-saveButtonText: {
+  saveButtonText: {
     color: "#ffffff",
     fontSize: 18,
     fontWeight: "bold",
   },
 
+  inputFocused: {
+    borderColor: "#2e7d32",
+    borderWidth: 2,
+  },
+
+  error: {
+    color: "red",
+    fontWeight: "bold",
+  },
 });
