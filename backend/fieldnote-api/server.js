@@ -1,43 +1,24 @@
 import express, { urlencoded } from "express"
+import notesRouter from "./routes/notes.js"
+import mongoose from "mongoose"
+import 'dotenv/config'
+
 
 const app = express()
+const PORT = 3000
+
+function logger(req, res, next){
+  console.log(`${req.method} ${req.url}`)
+  next()
+ }
 
 app.use(express.json())
 app.use(urlencoded({extended: true}))
+// app.use(logger)
 
-const PORT = 3000
+app.use('/api/notes', logger, notesRouter )
 
-app.get("/", (req, res)=>{
-    res.send('<h1>Home page</h1>')
-})
-
-app.get("/about", (req, res)=>{
-    res.send('About Page')
-})
-
-app.get('/user/:id', (req,res)=>{
- const userId = req.params.id; // access the parameter value
- res.send(`User ID is: ${userId}`);
-});
-
-app.get('/search', (req, res) => {
-  const course = req.query.course;
-  const id = req.query.id;
-  res.send(`Search for ${id}: ${course}`);
-});
-
-app.post('/register', (req, res) => {
-  console.log(req.body); // parsed data
-  res.send(`Hello, ${req.body.name}!`);
-});
-
-
-app.post('/login', (req, res) => {
-  console.log(req.body);
-  res.json({ received: req.body });
-});
-
-
-
-
-app.listen(PORT, ()=> console.log(`Server is running on http://localhost:${PORT}`))
+mongoose.connect(process.env.MONGO_URI).then(()=>{
+  console.log('MongoDB is connceted sucessfully!');
+  app.listen(PORT, ()=> console.log(`Server is running on http://localhost:${PORT}`))
+}).catch(err =>console.error('Failed to connected to the database: ', err))

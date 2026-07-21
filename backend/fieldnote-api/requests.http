@@ -1,32 +1,13 @@
 @baseUrl = http://localhost:3000
 
 ### Get home page
-GET {{baseUrl}}
+GET {{baseUrl}}/api/notes
 
-### Get about page
-GET {{baseUrl}}/about
-
-### Post register
-POST {{baseUrl}}/register
+### Post note
+POST {{baseUrl}}/api/notes
 Content-Type: application/json
 
 {
-    "name": "user",
-    "email": "user@gmail.com"
-}
-
-### Get user with id
-GET {{baseUrl}}/user/2
-
-
-### Get search with query string
-GET {{baseUrl}}/search?course=COSI 153A&id=123
-
-### Post register
-POST {{baseUrl}}/login
-Content-Type: application/json
-
-{
-    "name": "user",
-    "email": "user@gmail.com"
+    "title": "New title",
+    "body": "New body"
 }
