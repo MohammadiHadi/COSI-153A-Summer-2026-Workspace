@@ -8,6 +8,6 @@ POST {{baseUrl}}/api/notes
 Content-Type: application/json
 
 {
-    "title": "New title",
-    "body": "New body"
+    "title": "Second title",
+    "body": "Second body"
 }

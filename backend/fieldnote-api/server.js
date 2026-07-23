@@ -1,6 +1,7 @@
 import express, { urlencoded } from "express"
 import notesRouter from "./routes/notes.js"
 import mongoose from "mongoose"
+import cors from "cors"
 import 'dotenv/config'
 
 
@@ -14,7 +15,7 @@ function logger(req, res, next){
 
 app.use(express.json())
 app.use(urlencoded({extended: true}))
-// app.use(logger)
+app.use(cors({origin: "*"}))
 
 app.use('/api/notes', logger, notesRouter )
 

@@ -1,11 +1,21 @@
-const notes = [{title: 'Hello', body: 'This is my first note', createdAt: Date.now()}]
+import { Note } from "../models/notes.js"
 
-export const getNotes = (req, res)=>{
-  res.json(notes)
+export const getNotes = async (req, res)=>{
+  try {
+    const notes = await Note.find();
+    res.status(200).json(notes)
+  } catch (err) {
+    res.status(400).json({error: err.message})
+  }
 }
 
-export const addNote = (req, res)=>{
-    const note = { title: req.body.title, body: req.body.body, createAt:Date.now()}
-    notes.push(note);
+export const addNote = async (req, res)=>{
+  try {
+    const {title, body} = req.body;
+    const note = new Note({title, body});
+    await note.save()
     res.status(201).json(note)
+  } catch (err) {
+    res.status(400).json({error: err.message})
+  }
 }

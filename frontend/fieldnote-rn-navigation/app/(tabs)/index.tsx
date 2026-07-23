@@ -45,7 +45,7 @@ export default function NotesScreen() {
       <FlatList
         data={visibleNotes}
         renderItem={renderNote}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item._id}
         contentContainerStyle={styles.listContent}
         keyboardShouldPersistTaps="handled"
       />

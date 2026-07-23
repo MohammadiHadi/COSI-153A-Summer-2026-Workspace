@@ -26,7 +26,7 @@ export default function NoteCard({ note }: NoteCardProps) {
         style={styles.image}
         source={require("../assets/trailhead-photo.jpeg")}
       />
-      <Link href={{ pathname: "/note/[id]", params: { id: note.id } }} asChild>
+      <Link href={{ pathname: "/note/[id]", params: { id: note._id } }} asChild>
         <Pressable
           style={({ pressed }) => [
             styles.button,
