@@ -1,6 +1,6 @@
 @baseUrl = http://localhost:3000
 
-### Get home page
+### Get all notes
 GET {{baseUrl}}/api/notes
 
 ### Post note
@@ -10,4 +10,38 @@ Content-Type: application/json
 {
     "title": "Second title",
     "body": "Second body"
+}
+
+
+### Get one note
+GET {{baseUrl}}/api/notes/2
+
+
+### Delete one note
+DELETE {{baseUrl}}/api/notes/6a63b8621e04327722b5fabc
+
+### Update a note
+PATCH {{baseUrl}}/api/notes/6a62634abc64f8bfd4d4af07
+Content-Type: application/json
+
+{
+    "title": "New UPDATED Title"
+}
+
+### Update a note
+PATCH {{baseUrl}}/api/notes/6a62634abc64f8bfd4d4af07
+Content-Type: application/json
+
+{
+    "body": "New UPDATED body"
+}
+
+
+### Update a note
+PATCH {{baseUrl}}/api/notes/6a62634abc64f8bfd4d4af07
+Content-Type: application/json
+
+{
+    "title": "Updated title",
+    "body": "Updated body"
 }
